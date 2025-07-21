@@ -13,3 +13,61 @@
 2025-07-21 23:09:47,895 - voting - INFO - User 476658130 removed vote for option 4 in voting 1
 2025-07-21 23:09:48,440 - voting - INFO - User 476658130 removed vote for option 1 in voting 1
 2025-07-21 23:09:49,148 - voting - INFO - User 476658130 removed vote for option 6 in voting 1
+2025-07-21 23:17:41,284 - voting - INFO - User 5259577325 voted for option 5 in voting 1
+2025-07-21 23:28:13,930 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-21 23:28:14,552 - bot - INFO - Stopping FrienGO bot...
+2025-07-21 23:28:14,553 - scheduler - INFO - Ping scheduler stopped
+2025-07-21 23:28:14,792 - bot - INFO - FrienGO bot stopped
+2025-07-21 23:28:22,836 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-21 23:28:23,563 - bot - INFO - Stopping FrienGO bot...
+2025-07-21 23:28:23,564 - scheduler - INFO - Ping scheduler stopped
+2025-07-21 23:28:23,565 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-21' coro=<FrienGoBot.stop_bot() done, defined at /Users/n.novichkov/PycharmProjects/FrienGO/bot.py:320> exception=RuntimeError('This Updater is not running!')>
+Traceback (most recent call last):
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/bot.py", line 325, in stop_bot
+    await query.answer(message, show_alert=True)
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py", line 805, in stop
+    raise RuntimeError("This Updater is not running!")
+RuntimeError: This Updater is not running!
+2025-07-21 23:28:27,670 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-21 23:28:28,582 - bot - INFO - Stopping FrienGO bot...
+2025-07-21 23:28:28,583 - scheduler - INFO - Ping scheduler stopped
+2025-07-21 23:28:28,583 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-22' coro=<FrienGoBot.stop_bot() done, defined at /Users/n.novichkov/PycharmProjects/FrienGO/bot.py:320> exception=RuntimeError('This Updater is not running!')>
+Traceback (most recent call last):
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/bot.py", line 325, in stop_bot
+    await query.answer(message, show_alert=True)
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py", line 805, in stop
+    raise RuntimeError("This Updater is not running!")
+RuntimeError: This Updater is not running!
+2025-07-21 23:28:29,416 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-21 23:28:29,585 - bot - INFO - Stopping FrienGO bot...
+2025-07-21 23:28:29,586 - scheduler - INFO - Ping scheduler stopped
+2025-07-21 23:28:29,586 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-23' coro=<FrienGoBot.stop_bot() done, defined at /Users/n.novichkov/PycharmProjects/FrienGO/bot.py:320> exception=RuntimeError('This Updater is not running!')>
+Traceback (most recent call last):
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/bot.py", line 325, in stop_bot
+    await query.answer(message, show_alert=True)
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py", line 805, in stop
+    raise RuntimeError("This Updater is not running!")
+RuntimeError: This Updater is not running!
+2025-07-21 23:28:29,605 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-21 23:28:30,589 - bot - INFO - Stopping FrienGO bot...
+2025-07-21 23:28:30,589 - scheduler - INFO - Ping scheduler stopped
+2025-07-21 23:28:30,589 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-24' coro=<FrienGoBot.stop_bot() done, defined at /Users/n.novichkov/PycharmProjects/FrienGO/bot.py:320> exception=RuntimeError('This Updater is not running!')>
+Traceback (most recent call last):
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/bot.py", line 325, in stop_bot
+    await query.answer(message, show_alert=True)
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py", line 805, in stop
+    raise RuntimeError("This Updater is not running!")
+RuntimeError: This Updater is not running!
+2025-07-21 23:29:37,743 - database - INFO - Database initialized successfully
+2025-07-21 23:29:37,750 - bot - INFO - Starting FrienGO bot...
+2025-07-21 23:29:37,751 - scheduler - INFO - Ping scheduler started
+2025-07-21 23:29:38,032 - bot - INFO - FrienGO bot started successfully!
+2025-07-21 23:30:24,314 - voting - INFO - Created voting 2 in chat -1002797546947
+2025-07-21 23:30:38,562 - voting - INFO - User 476658130 voted for option 15 in voting 2
+2025-07-21 23:30:42,125 - voting - INFO - User 5259577325 voted for option 10 in voting 2
+2025-07-21 23:30:46,713 - voting - INFO - User 5259577325 voted for option 9 in voting 2
+2025-07-21 23:31:17,078 - voting - INFO - Created voting 3 in chat -1002797546947

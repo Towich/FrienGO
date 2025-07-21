@@ -40,6 +40,8 @@ class FrienGoBot:
         self.application.add_handler(CommandHandler("vote", self.create_voting_command))
         self.application.add_handler(CommandHandler("ping", self.ping_command))
         self.application.add_handler(CommandHandler("status", self.status_command))
+        self.application.add_handler(CommandHandler("close", self.close_voting_command))
+        self.application.add_handler(CommandHandler("results", self.results_command))
         
         # Callback обработчик для кнопок
         self.application.add_handler(CallbackQueryHandler(self.handle_callback))
@@ -78,12 +80,15 @@ class FrienGoBot:
             "**Основные команды:**\n"
             "🗳 `/vote` - Создать новое голосование о днях встречи\n"
             "📊 `/status` - Показать текущее активное голосование\n"
-            "📢 `/ping` - Напомнить непроголосовавшим участникам\n\n"
+            "📢 `/ping` - Напомнить непроголосовавшим участникам\n"
+            "🔍 `/results` - Подробные результаты с именами голосующих\n"
+            "🏁 `/close` - Завершить голосование и показать топ-3\n\n"
             "**Как пользоваться:**\n"
             "1️⃣ Создайте голосование командой `/vote`\n"
             "2️⃣ Выберите подходящие дни, нажимая на кнопки\n"
             "3️⃣ Можете отменить свой голос, нажав на кнопку повторно\n"
-            "4️⃣ Используйте `/ping` чтобы напомнить друзьям\n\n"
+            "4️⃣ Используйте `/ping` чтобы напомнить друзьям\n"
+            "5️⃣ Завершите голосование командой `/close`\n\n"
             "**Автоматические напоминания:**\n"
             "⏰ Бот автоматически напомнит через 24, 48 и 72 часа\n\n"
             "**Особенности:**\n"
@@ -117,7 +122,7 @@ class FrienGoBot:
             
             # Формируем сообщение и клавиатуру
             message_text = self._format_voting_message(voting.voting_id)
-            keyboard = self._create_voting_keyboard(voting.voting_id, user.id)
+            keyboard = self._create_voting_keyboard(voting.voting_id)
             
             # Отправляем сообщение
             sent_message = await update.message.reply_text(
@@ -145,7 +150,7 @@ class FrienGoBot:
             return
         
         message_text = self._format_voting_message(voting.voting_id)
-        keyboard = self._create_voting_keyboard(voting.voting_id, update.effective_user.id if update.effective_user else None)
+        keyboard = self._create_voting_keyboard(voting.voting_id)
         
         await update.message.reply_text(
             message_text,
@@ -168,6 +173,101 @@ class FrienGoBot:
         
         result = await self.scheduler.send_manual_ping(chat_id, voting.voting_id, non_voted_users)
         await update.message.reply_text(result)
+    
+    async def close_voting_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обработчик команды /close - завершение голосования"""
+        chat_id = update.effective_chat.id
+        
+        voting = self.voting_service.get_active_voting(chat_id)
+        if not voting:
+            await update.message.reply_text("📝 В данном чате нет активного голосования.")
+            return
+        
+        # Завершаем голосование
+        results = self.voting_service.close_voting(voting.voting_id)
+        if not results:
+            await update.message.reply_text("❌ Ошибка при завершении голосования.")
+            return
+        
+        # Формируем сообщение с топ-3 результатами
+        message = f"🏁 **Голосование завершено!**\n\n"
+        message += f"🗳 {results['title']}\n"
+        message += f"📊 Итого проголосовало: {results['voted_users']}/{results['total_users']}\n\n"
+        message += "🏆 **Топ-3 дня:**\n"
+        
+        for i, option in enumerate(results['top_3'], 1):
+            emoji = ["🥇", "🥈", "🥉"][i-1] if i <= 3 else f"{i}."
+            message += f"{emoji} {option['description']} — {option['votes_count']} голосов\n"
+        
+        if len(results['top_3']) == 0:
+            message += "❌ Никто не проголосовал\n"
+        
+        message += f"\n💡 Используйте /results для подробных результатов"
+        
+        await update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+    
+    async def results_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обработчик команды /results - подробные результаты голосования"""
+        chat_id = update.effective_chat.id
+        
+        # Получаем последнее голосование (активное или завершенное)
+        voting = self.voting_service.get_active_voting(chat_id)
+        if not voting:
+            # Ищем последнее завершенное голосование
+            with self.db.get_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT voting_id FROM votings 
+                    WHERE chat_id = ? 
+                    ORDER BY created_at DESC LIMIT 1
+                """, (chat_id,))
+                row = cursor.fetchone()
+                if row:
+                    voting = self.db.get_voting(row['voting_id'])
+        
+        if not voting:
+            await update.message.reply_text("📝 В данном чате нет голосований.")
+            return
+        
+        # Получаем детальные результаты
+        results = self.voting_service.get_detailed_results(voting.voting_id)
+        if not results:
+            await update.message.reply_text("❌ Ошибка при получении результатов.")
+            return
+        
+        # Формируем подробное сообщение
+        status_emoji = "🏁" if voting.status.value == "closed" else "🗳"
+        message = f"{status_emoji} **{results['title']}**\n"
+        message += f"📊 Проголосовало: {results['voted_users']}/{results['total_users']}\n\n"
+        
+        for option in results['options']:
+            message += f"📅 **{option['description']}**: {option['votes_count']} голосов\n"
+            if option['voters']:
+                for voter in option['voters']:
+                    message += f"   👤 {voter['display_name']} {voter['username']}\n"
+            else:
+                message += f"   ❌ Никто не голосовал\n"
+            message += "\n"
+        
+        # Отправляем сообщение частями, если оно слишком длинное
+        if len(message) > 4000:
+            # Разбиваем на части по опциям
+            base_message = f"{status_emoji} **{results['title']}**\n"
+            base_message += f"📊 Проголосовало: {results['voted_users']}/{results['total_users']}\n\n"
+            
+            await update.message.reply_text(base_message, parse_mode=ParseMode.MARKDOWN)
+            
+            for option in results['options']:
+                option_message = f"📅 **{option['description']}**: {option['votes_count']} голосов\n"
+                if option['voters']:
+                    for voter in option['voters']:
+                        option_message += f"   👤 {voter['display_name']} {voter['username']}\n"
+                else:
+                    option_message += f"   ❌ Никто не голосовал\n"
+                
+                await update.message.reply_text(option_message, parse_mode=ParseMode.MARKDOWN)
+        else:
+            await update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
     
     async def handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик нажатий на inline кнопки"""
@@ -208,7 +308,7 @@ class FrienGoBot:
                 # Если уже голосовал - отменяем голос
                 success, message = self.voting_service.remove_vote(user.id, option_id, voting_id)
                 if success:
-                    await self._update_voting_message(query, voting_id, user.id)
+                    await self._update_voting_message(query, voting_id)
                     await query.answer("Голос отменен")
                 else:
                     await query.answer(message, show_alert=True)
@@ -218,16 +318,16 @@ class FrienGoBot:
                 
                 if success:
                     # Обновляем сообщение
-                    await self._update_voting_message(query, voting_id, user.id)
+                    await self._update_voting_message(query, voting_id)
                     # Отправляем уведомление о голосе
-                    await self._send_vote_notification(update.effective_chat.id, user, voting_id)
+                    await self._send_vote_notification(update.effective_chat.id, user, voting_id, option_id)
                 else:
                     await query.answer(message, show_alert=True)
     
-    async def _update_voting_message(self, query, voting_id: int, user_id: int = None):
+    async def _update_voting_message(self, query, voting_id: int):
         """Обновить сообщение с голосованием"""
         message_text = self._format_voting_message(voting_id)
-        keyboard = self._create_voting_keyboard(voting_id, user_id)
+        keyboard = self._create_voting_keyboard(voting_id)
         
         try:
             await query.edit_message_text(
@@ -238,14 +338,26 @@ class FrienGoBot:
         except Exception as e:
             self.logger.error(f"Error updating voting message: {e}")
     
-    async def _send_vote_notification(self, chat_id: int, user, voting_id: int):
+    async def _send_vote_notification(self, chat_id: int, user, voting_id: int, option_id: int):
         """Отправить уведомление о том, что пользователь проголосовал"""
         stats = self.voting_service.get_voting_stats(voting_id)
         if not stats:
             return
         
+        # Находим информацию о выбранной опции
+        selected_option = None
+        for option in stats['options']:
+            if option['option_id'] == option_id:
+                selected_option = option
+                break
+        
+        if not selected_option:
+            return
+        
         user_name = user.first_name or user.username or f"User_{user.id}"
-        message = (f"✅ {user_name} проголосовал!\n"
+        username_part = f"(@{user.username})" if user.username else f"(ID:{user.id})"
+        
+        message = (f"✅ {user_name} {username_part} проголосовал за {selected_option['description']}!\n"
                   f"📊 Проголосовало: {stats['voted_users']}/{stats['total_users']}")
         
         try:
@@ -269,7 +381,7 @@ class FrienGoBot:
         
         return message
     
-    def _create_voting_keyboard(self, voting_id: int, user_id: int = None) -> InlineKeyboardMarkup:
+    def _create_voting_keyboard(self, voting_id: int) -> InlineKeyboardMarkup:
         """Создать клавиатуру для голосования"""
         voting = self.db.get_voting(voting_id)
         if not voting:
@@ -277,14 +389,8 @@ class FrienGoBot:
         
         keyboard = []
         for option in voting.options:
-            # Проверяем, голосовал ли текущий пользователь за эту опцию
-            user_voted = False
-            if user_id and voting.has_user_voted_for_option(user_id, option.option_id):
-                user_voted = True
-            
             # Кнопка для голосования/отмены голоса
-            vote_emoji = "✅" if user_voted else "⬜"
-            button_text = f"{vote_emoji} {option.description}"
+            button_text = option.description
             callback_data = f"vote:{voting_id}:{option.option_id}"
             
             button = InlineKeyboardButton(button_text, callback_data=callback_data)

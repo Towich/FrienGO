@@ -184,8 +184,7 @@ class VotingService:
         message = f"🗳 **{stats['title']}**\n\n"
         
         for option in stats['options']:
-            votes_emoji = "✅" * option['votes_count'] if option['votes_count'] > 0 else "❌"
-            message += f"{option['description']}: {option['votes_count']} голосов {votes_emoji}\n"
+            message += f"{option['description']}: {option['votes_count']} голосов\n"
         
         message += f"\n📊 Проголосовало: {stats['voted_users']}/{stats['total_users']}"
         
@@ -193,4 +192,76 @@ class VotingService:
     
     def get_active_voting(self, chat_id: int) -> Optional[Voting]:
         """Получить активное голосование в чате"""
-        return self.db.get_active_voting_by_chat(chat_id) 
+        return self.db.get_active_voting_by_chat(chat_id)
+    
+    def close_voting(self, voting_id: int) -> Optional[dict]:
+        """Завершить голосование и получить результаты"""
+        voting = self.db.get_voting(voting_id)
+        if not voting:
+            return None
+        
+        if voting.status != VoteStatus.ACTIVE:
+            return None
+        
+        # Обновляем статус голосования на закрытое
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE votings SET status = 'closed' WHERE voting_id = ?
+            """, (voting_id,))
+            conn.commit()
+        
+        # Получаем топ-3 результата
+        stats = self.get_voting_stats(voting_id)
+        if not stats:
+            return None
+        
+        # Сортируем опции по количеству голосов
+        sorted_options = sorted(stats['options'], key=lambda x: x['votes_count'], reverse=True)
+        top_3 = sorted_options[:3]
+        
+        return {
+            'title': stats['title'],
+            'total_users': stats['total_users'],
+            'voted_users': stats['voted_users'],
+            'top_3': top_3,
+            'all_options': sorted_options
+        }
+    
+    def get_detailed_results(self, voting_id: int) -> Optional[dict]:
+        """Получить детальные результаты голосования с именами пользователей"""
+        voting = self.db.get_voting(voting_id)
+        if not voting:
+            return None
+        
+        stats = self.get_voting_stats(voting_id)
+        if not stats:
+            return None
+        
+        detailed_options = []
+        for option in stats['options']:
+            voters_info = []
+            for user_id in option['voters']:
+                user = self.db.get_user(user_id)
+                if user:
+                    username_part = f"@{user.username}" if user.username else f"ID:{user_id}"
+                    voters_info.append({
+                        'display_name': user.display_name,
+                        'username': username_part,
+                        'user_id': user_id
+                    })
+            
+            detailed_options.append({
+                'option_id': option['option_id'],
+                'description': option['description'],
+                'date': option['date'],
+                'votes_count': option['votes_count'],
+                'voters': voters_info
+            })
+        
+        return {
+            'title': stats['title'],
+            'total_users': stats['total_users'],
+            'voted_users': stats['voted_users'],
+            'options': detailed_options
+        } 

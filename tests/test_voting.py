@@ -215,7 +215,7 @@ class TestVotingService(unittest.TestCase):
         
         self.assertIn("🗳 **Тест**", message)
         self.assertIn("📊 Проголосовало: 1/1", message)
-        self.assertIn("✅", message)  # Должен быть эмодзи голоса
+        self.assertIn("1 голосов", message)  # Должен быть счетчик голосов
 
 
 if __name__ == "__main__":
