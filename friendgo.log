@@ -1,0 +1,15 @@
+2025-07-21 23:05:51,593 - database - INFO - Database initialized successfully
+2025-07-21 23:05:51,601 - bot - INFO - Starting FrienGO bot...
+2025-07-21 23:05:51,602 - scheduler - INFO - Ping scheduler started
+2025-07-21 23:05:54,943 - bot - INFO - FrienGO bot started successfully!
+2025-07-21 23:07:15,541 - voting - INFO - Created voting 1 in chat -1002797546947
+2025-07-21 23:07:25,352 - voting - INFO - User 5259577325 voted for option 4 in voting 1
+2025-07-21 23:07:30,171 - voting - INFO - User 5259577325 voted for option 2 in voting 1
+2025-07-21 23:07:33,214 - voting - INFO - User 5259577325 removed vote for option 2 in voting 1
+2025-07-21 23:07:34,631 - voting - INFO - User 5259577325 voted for option 2 in voting 1
+2025-07-21 23:09:07,868 - voting - INFO - User 476658130 voted for option 1 in voting 1
+2025-07-21 23:09:11,296 - voting - INFO - User 476658130 voted for option 4 in voting 1
+2025-07-21 23:09:13,772 - voting - INFO - User 476658130 voted for option 6 in voting 1
+2025-07-21 23:09:47,895 - voting - INFO - User 476658130 removed vote for option 4 in voting 1
+2025-07-21 23:09:48,440 - voting - INFO - User 476658130 removed vote for option 1 in voting 1
+2025-07-21 23:09:49,148 - voting - INFO - User 476658130 removed vote for option 6 in voting 1
