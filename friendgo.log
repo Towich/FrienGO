@@ -249,3 +249,7 @@ RuntimeError: This Updater is not running!
 2025-07-26 12:19:31,563 - voting - INFO - User 5259577325 voted for option 58 in voting 8
 2025-07-26 12:19:34,641 - voting - INFO - User 5259577325 removed vote for option 58 in voting 8
 2025-07-26 12:19:35,677 - voting - INFO - User 5259577325 removed vote for option 60 in voting 8
+2025-07-26 12:23:37,099 - database - INFO - Database initialized successfully
+2025-07-26 12:23:37,107 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:23:37,107 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:23:37,374 - bot - INFO - FrienGO bot started successfully!
