@@ -123,7 +123,7 @@ class FrienGoBot:
         
         for i, user in enumerate(all_users, 1):
             user_display = user.display_name
-            username_part = f" (@{user.username})" if user.username else ""
+            username_part = f" ({user.username})" if user.username else ""
             users_text += f"{i}. {user_display}{username_part} (ID: {user.user_id})\n"
         
         users_text += f"\n💡 Все эти пользователи будут получать уведомления о голосованиях."
@@ -141,7 +141,7 @@ class FrienGoBot:
                 chunk_text = ""
                 for j, user in enumerate(chunk_users, i + 1):
                     user_display = user.display_name
-                    username_part = f" (@{user.username})" if user.username else ""
+                    username_part = f" ({user.username})" if user.username else ""
                     chunk_text += f"{j}. {user_display}{username_part} (ID: {user.user_id})\n"
                 
                 await update.message.reply_text(chunk_text, parse_mode=ParseMode.MARKDOWN)

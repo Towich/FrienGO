@@ -241,3 +241,11 @@ RuntimeError: This Updater is not running!
 2025-07-26 12:15:39,511 - bot - INFO - Pinned voting message 233 in chat -1002797546947
 2025-07-26 12:15:41,140 - voting - INFO - User 5259577325 voted for option 64 in voting 8
 2025-07-26 12:15:41,998 - voting - INFO - User 5259577325 voted for option 60 in voting 8
+2025-07-26 12:19:01,197 - database - INFO - Database initialized successfully
+2025-07-26 12:19:01,204 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:19:01,204 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:19:01,489 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:19:16,475 - bot - INFO - Unpinned previous voting message 222 in chat -1002797546947
+2025-07-26 12:19:31,563 - voting - INFO - User 5259577325 voted for option 58 in voting 8
+2025-07-26 12:19:34,641 - voting - INFO - User 5259577325 removed vote for option 58 in voting 8
+2025-07-26 12:19:35,677 - voting - INFO - User 5259577325 removed vote for option 60 in voting 8
