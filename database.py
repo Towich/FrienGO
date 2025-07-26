@@ -224,6 +224,20 @@ class DatabaseManager:
                 return self.get_voting(row['voting_id'])
             return None
     
+    def get_last_closed_voting_message_id(self, chat_id: int) -> Optional[int]:
+        """Получить message_id последнего закрытого голосования в чате"""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT message_id FROM votings 
+                WHERE chat_id = ? AND status = 'closed' AND message_id IS NOT NULL
+                ORDER BY created_at DESC LIMIT 1
+            """, (chat_id,))
+            row = cursor.fetchone()
+            if row:
+                return row['message_id']
+            return None
+    
     def update_voting_message_id(self, voting_id: int, message_id: int):
         """Обновить ID сообщения голосования"""
         with self.get_connection() as conn:

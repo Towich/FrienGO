@@ -76,14 +76,17 @@ class PingScheduler:
         if not self.ping_callback:
             return
         
-        # Получаем список не проголосовавших (если возможно)
-        # Примечание: Telegram Bot API не позволяет получить всех участников чата
-        # поэтому будем пинговать только известных пользователей
+        # Получаем список всех известных пользователей чата
+        chat_users = self.db.get_chat_users(chat_id)
         
-        message = self._get_ping_message(ping_type)
+        # Получаем список не проголосовавших пользователей
+        non_voted_users = self.voting_service.get_non_voted_users(voting_id, chat_users)
+        
+        # Создаем сообщение с пингом
+        message = self._get_ping_message(ping_type, non_voted_users)
         await self.ping_callback(chat_id, voting_id, message)
     
-    def _get_ping_message(self, ping_type: str) -> str:
+    def _get_ping_message(self, ping_type: str, non_voted_users: List[User]) -> str:
         """Получить текст сообщения для пинга"""
         time_messages = {
             "24h": "⏰ Прошло 24 часа с момента создания голосования!",
@@ -92,7 +95,25 @@ class PingScheduler:
         }
         
         base_message = time_messages.get(ping_type, "⏰ Напоминание о голосовании!")
-        return f"{base_message}\n\n📣 Не забудьте проголосовать за удобные дни для встречи!"
+        
+        if not non_voted_users:
+            return f"{base_message}\n\n🎉 Все пользователи уже проголосовали!"
+        
+        # Создаем список упоминаний пользователей по их Telegram ID
+        mentions = []
+        for user in non_voted_users:
+            if user.username:
+                # Если есть username, используем @username
+                mentions.append(f"@{user.username}")
+            else:
+                # Если нет username, используем упоминание по ID
+                display_name = user.display_name
+                mentions.append(f"[{display_name}](tg://user?id={user.user_id})")
+        
+        return (f"{base_message}\n\n"
+               f"📣 Не забудьте проголосовать за удобные дни для встречи!\n\n"
+               f"👥 Ждем голосов от: {', '.join(mentions)}\n\n"
+               f"🗳 Нажмите на кнопки под сообщением с голосованием!")
     
     async def send_manual_ping(self, chat_id: int, voting_id: int, 
                              non_voted_users: List[User]) -> str:
@@ -103,13 +124,16 @@ class PingScheduler:
         if not non_voted_users:
             return "Все пользователи уже проголосовали! 🎉"
         
-        # Создаем список упоминаний пользователей
+        # Создаем список упоминаний пользователей по их Telegram ID
         mentions = []
         for user in non_voted_users:
             if user.username:
+                # Если есть username, используем @username
                 mentions.append(f"@{user.username}")
             else:
-                mentions.append(user.display_name)
+                # Если нет username, используем упоминание по ID
+                display_name = user.display_name
+                mentions.append(f"[{display_name}](tg://user?id={user.user_id})")
         
         message = (f"📢 Ребята, не забудьте проголосовать!\n\n"
                   f"👥 Ждем голосов от: {', '.join(mentions)}\n\n"

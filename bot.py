@@ -95,7 +95,8 @@ class FrienGoBot:
             "✅ Множественный выбор дней\n"
             "🔄 Возможность отмены голоса\n"
             "📊 Автоматический подсчет голосов\n"
-            "👥 Отслеживание количества проголосовавших\n\n"
+            "👥 Отслеживание количества проголосовавших\n"
+            "📌 Автоматическое закрепление сообщений с голосованием\n\n"
             "Приятного использования! 🎉"
         )
         
@@ -117,6 +118,18 @@ class FrienGoBot:
             self.db.save_user(db_user)
         
         try:
+            # Раскрепляем предыдущие сообщения голосований (если есть)
+            last_message_id = self.db.get_last_closed_voting_message_id(chat_id)
+            if last_message_id:
+                try:
+                    await self.application.bot.unpin_chat_message(
+                        chat_id=chat_id,
+                        message_id=last_message_id
+                    )
+                    self.logger.info(f"Unpinned previous voting message {last_message_id} in chat {chat_id}")
+                except Exception as e:
+                    self.logger.warning(f"Failed to unpin previous message: {e}")
+            
             # Создаем голосование
             voting = self.voting_service.create_voting(chat_id)
             
@@ -133,6 +146,18 @@ class FrienGoBot:
             
             # Обновляем ID сообщения в БД
             self.db.update_voting_message_id(voting.voting_id, sent_message.message_id)
+            
+            # Закрепляем сообщение с голосованием
+            try:
+                await self.application.bot.pin_chat_message(
+                    chat_id=chat_id,
+                    message_id=sent_message.message_id,
+                    disable_notification=True  # Не отправляем уведомление о закреплении
+                )
+                self.logger.info(f"Pinned voting message {sent_message.message_id} in chat {chat_id}")
+            except Exception as e:
+                self.logger.warning(f"Failed to pin message: {e}. Bot may not have admin rights.")
+                # Не блокируем создание голосования если не удалось закрепить
             
         except ValueError as e:
             await update.message.reply_text(f"❌ {str(e)}")
@@ -172,7 +197,7 @@ class FrienGoBot:
         non_voted_users = self.voting_service.get_non_voted_users(voting.voting_id, chat_users)
         
         result = await self.scheduler.send_manual_ping(chat_id, voting.voting_id, non_voted_users)
-        await update.message.reply_text(result)
+        await update.message.reply_text(result, parse_mode=ParseMode.MARKDOWN)
     
     async def close_voting_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /close - завершение голосования"""
@@ -182,6 +207,17 @@ class FrienGoBot:
         if not voting:
             await update.message.reply_text("📝 В данном чате нет активного голосования.")
             return
+        
+        # Раскрепляем сообщение с голосованием перед закрытием
+        if voting.message_id:
+            try:
+                await self.application.bot.unpin_chat_message(
+                    chat_id=chat_id,
+                    message_id=voting.message_id
+                )
+                self.logger.info(f"Unpinned voting message {voting.message_id} in chat {chat_id}")
+            except Exception as e:
+                self.logger.warning(f"Failed to unpin message: {e}. Message may already be unpinned.")
         
         # Завершаем голосование
         results = self.voting_service.close_voting(voting.voting_id)
@@ -401,7 +437,11 @@ class FrienGoBot:
     async def _send_ping_message(self, chat_id: int, voting_id: int, message: str):
         """Callback функция для отправки ping сообщений"""
         try:
-            await self.application.bot.send_message(chat_id, message)
+            await self.application.bot.send_message(
+                chat_id, 
+                message, 
+                parse_mode=ParseMode.MARKDOWN
+            )
         except Exception as e:
             self.logger.error(f"Error sending ping message: {e}")
     

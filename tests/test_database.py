@@ -238,6 +238,40 @@ class TestDatabaseManager(unittest.TestCase):
         chat2_users = self.db.get_chat_users(222)
         self.assertEqual(len(chat2_users), 1)
         self.assertEqual(chat2_users[0].user_id, 789)
+    
+    def test_get_last_closed_voting_message_id(self):
+        """Тест получения ID сообщения последнего закрытого голосования"""
+        chat_id = 123
+        
+        # Создаем два голосования
+        voting1 = Voting(0, chat_id, None, "Test 1", datetime.now())
+        voting1.options = [VoteOption(0, 0, date(2024, 1, 6), "Test")]
+        created_voting1 = self.db.create_voting(voting1)
+        
+        voting2 = Voting(0, chat_id, None, "Test 2", datetime.now())
+        voting2.options = [VoteOption(0, 0, date(2024, 1, 7), "Test")]
+        created_voting2 = self.db.create_voting(voting2)
+        
+        # Устанавливаем message_id и закрываем голосования
+        self.db.update_voting_message_id(created_voting1.voting_id, 100)
+        self.db.update_voting_message_id(created_voting2.voting_id, 200)
+        
+        # Закрываем голосования (меняем статус)
+        with self.db.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE votings SET status = 'closed' WHERE voting_id = ?", 
+                          (created_voting1.voting_id,))
+            cursor.execute("UPDATE votings SET status = 'closed' WHERE voting_id = ?", 
+                          (created_voting2.voting_id,))
+            conn.commit()
+        
+        # Должно вернуть ID сообщения последнего голосования (voting2)
+        last_message_id = self.db.get_last_closed_voting_message_id(chat_id)
+        self.assertEqual(last_message_id, 200)
+        
+        # Тест для чата без голосований
+        no_message_id = self.db.get_last_closed_voting_message_id(999)
+        self.assertIsNone(no_message_id)
 
 
 if __name__ == "__main__":

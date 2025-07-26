@@ -71,3 +71,49 @@ RuntimeError: This Updater is not running!
 2025-07-21 23:30:42,125 - voting - INFO - User 5259577325 voted for option 10 in voting 2
 2025-07-21 23:30:46,713 - voting - INFO - User 5259577325 voted for option 9 in voting 2
 2025-07-21 23:31:17,078 - voting - INFO - Created voting 3 in chat -1002797546947
+2025-07-26 10:51:26,269 - database - INFO - Database initialized successfully
+2025-07-26 10:51:26,278 - bot - INFO - Starting FrienGO bot...
+2025-07-26 10:51:26,278 - scheduler - INFO - Ping scheduler started
+2025-07-26 10:51:26,544 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 10:51:26,608 - scheduler - INFO - Sent 24h ping for voting 1
+2025-07-26 10:51:26,848 - scheduler - INFO - Sent 48h ping for voting 1
+2025-07-26 10:51:27,059 - scheduler - INFO - Sent 72h ping for voting 1
+2025-07-26 10:51:27,195 - scheduler - INFO - Sent 24h ping for voting 2
+2025-07-26 10:51:27,285 - scheduler - INFO - Sent 48h ping for voting 2
+2025-07-26 10:51:32,295 - bot - ERROR - Error sending ping message: Timed out
+2025-07-26 10:51:32,303 - scheduler - INFO - Sent 72h ping for voting 2
+2025-07-26 10:51:34,446 - scheduler - INFO - Sent 24h ping for voting 3
+2025-07-26 10:51:34,557 - scheduler - INFO - Sent 48h ping for voting 3
+2025-07-26 10:51:34,645 - scheduler - INFO - Sent 72h ping for voting 3
+2025-07-26 10:55:42,165 - voting - INFO - User 5259577325 voted for option 21 in voting 3
+2025-07-26 10:55:53,880 - voting - INFO - User 5259577325 voted for option 19 in voting 3
+2025-07-26 10:55:55,743 - voting - INFO - User 5259577325 removed vote for option 19 in voting 3
+2025-07-26 10:56:27,354 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-26 10:56:27,900 - bot - INFO - Stopping FrienGO bot...
+2025-07-26 10:56:27,901 - scheduler - INFO - Ping scheduler stopped
+2025-07-26 10:56:31,133 - bot - INFO - FrienGO bot stopped
+2025-07-26 10:56:38,619 - __main__ - INFO - Получен сигнал завершения, останавливаем бота...
+2025-07-26 10:56:38,912 - bot - INFO - Stopping FrienGO bot...
+2025-07-26 10:56:38,913 - scheduler - INFO - Ping scheduler stopped
+2025-07-26 10:56:38,913 - asyncio - ERROR - Task exception was never retrieved
+future: <Task finished name='Task-19' coro=<FrienGoBot.stop_bot() done, defined at /Users/n.novichkov/PycharmProjects/FrienGO/bot.py:426> exception=RuntimeError('This Updater is not running!')>
+Traceback (most recent call last):
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/bot.py", line 431, in stop_bot
+    """Остановить бота"""
+  File "/Users/n.novichkov/PycharmProjects/FrienGO/.venv/lib/python3.9/site-packages/telegram/ext/_updater.py", line 805, in stop
+    raise RuntimeError("This Updater is not running!")
+RuntimeError: This Updater is not running!
+2025-07-26 10:56:46,582 - database - INFO - Database initialized successfully
+2025-07-26 10:56:46,590 - bot - INFO - Starting FrienGO bot...
+2025-07-26 10:56:46,590 - scheduler - INFO - Ping scheduler started
+2025-07-26 10:56:46,853 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 10:57:11,075 - voting - INFO - Created voting 4 in chat -1002797546947
+2025-07-26 10:57:12,925 - voting - INFO - User 5259577325 voted for option 25 in voting 4
+2025-07-26 11:01:36,745 - database - INFO - Database initialized successfully
+2025-07-26 11:01:36,752 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:01:36,752 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:01:37,031 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:02:02,485 - bot - INFO - Unpinned voting message 75 in chat -1002797546947
+2025-07-26 11:02:04,509 - bot - INFO - Unpinned previous voting message 75 in chat -1002797546947
+2025-07-26 11:02:04,514 - voting - INFO - Created voting 5 in chat -1002797546947
+2025-07-26 11:02:04,719 - bot - INFO - Pinned voting message 83 in chat -1002797546947
