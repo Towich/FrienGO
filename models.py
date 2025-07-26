@@ -27,10 +27,10 @@ class User:
 
 @dataclass
 class VoteOption:
-    """Опция голосования (дата выходного дня)"""
+    """Опция голосования (дата выходного дня или произвольная опция)"""
     option_id: int
     voting_id: int
-    date: date
+    date: Optional[date]
     description: str
     
     @classmethod
@@ -43,6 +43,11 @@ class VoteOption:
         weekday = weekday_names.get(date.weekday(), "День")
         description = f"{weekday} {date.strftime('%d.%m.%Y')}"
         return cls(option_id, voting_id, date, description)
+    
+    @classmethod
+    def create_custom(cls, option_id: int, voting_id: int, description: str) -> 'VoteOption':
+        """Создает произвольную опцию без даты"""
+        return cls(option_id, voting_id, None, description)
 
 
 @dataclass

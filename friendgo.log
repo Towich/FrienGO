@@ -253,3 +253,111 @@ RuntimeError: This Updater is not running!
 2025-07-26 12:23:37,107 - bot - INFO - Starting FrienGO bot...
 2025-07-26 12:23:37,107 - scheduler - INFO - Ping scheduler started
 2025-07-26 12:23:37,374 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:26:07,904 - bot - INFO - Unpinned previous voting message 222 in chat -1002797546947
+2025-07-26 12:28:14,735 - database - INFO - Database initialized successfully
+2025-07-26 12:28:14,742 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:28:14,742 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:28:15,011 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:28:22,945 - bot - INFO - Unpinned voting message 233 in chat -1002797546947
+2025-07-26 12:28:26,143 - bot - INFO - Unpinned previous voting message 233 in chat -1002797546947
+2025-07-26 12:28:26,149 - voting - INFO - Created voting 9 in chat -1002797546947
+2025-07-26 12:28:26,354 - bot - INFO - Pinned voting message 272 in chat -1002797546947
+2025-07-26 12:28:28,004 - bot - INFO - Unpinned voting message 272 in chat -1002797546947
+2025-07-26 12:28:31,907 - bot - INFO - Unpinned previous voting message 272 in chat -1002797546947
+2025-07-26 12:28:31,912 - voting - INFO - Created voting 10 in chat -1002797546947
+2025-07-26 12:28:32,230 - bot - INFO - Pinned voting message 278 in chat -1002797546947
+2025-07-26 12:28:54,819 - bot - INFO - Unpinned voting message 278 in chat -1002797546947
+2025-07-26 12:29:02,063 - bot - INFO - Unpinned previous voting message 278 in chat -1002797546947
+2025-07-26 12:29:02,071 - voting - INFO - Created voting 11 in chat -1002797546947
+2025-07-26 12:29:02,275 - bot - INFO - Pinned voting message 284 in chat -1002797546947
+2025-07-26 12:29:15,510 - voting - INFO - User 5259577325 voted for option 84 in voting 11
+2025-07-26 12:29:18,656 - voting - INFO - User 5259577325 voted for option 86 in voting 11
+2025-07-26 12:32:20,273 - database - INFO - Database initialized successfully
+2025-07-26 12:32:20,280 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:32:20,280 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:32:20,558 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:32:23,340 - bot - INFO - Unpinned voting message 284 in chat -1002797546947
+2025-07-26 12:32:28,272 - bot - INFO - Unpinned previous voting message 284 in chat -1002797546947
+2025-07-26 12:32:28,278 - voting - INFO - Created voting 12 in chat -1002797546947
+2025-07-26 12:32:28,502 - bot - INFO - Pinned voting message 292 in chat -1002797546947
+2025-07-26 12:32:30,854 - voting - INFO - User 5259577325 voted for option 91 in voting 12
+2025-07-26 12:32:33,249 - voting - INFO - User 5259577325 voted for option 94 in voting 12
+2025-07-26 12:32:34,474 - voting - INFO - User 5259577325 removed vote for option 94 in voting 12
+2025-07-26 12:32:35,502 - voting - INFO - User 5259577325 removed vote for option 91 in voting 12
+2025-07-26 12:32:36,346 - voting - INFO - User 5259577325 voted for option 89 in voting 12
+2025-07-26 12:32:45,003 - voting - INFO - User 5259577325 voted for option 92 in voting 12
+2025-07-26 12:32:46,207 - voting - INFO - User 5259577325 removed vote for option 89 in voting 12
+2025-07-26 12:32:47,081 - voting - INFO - User 5259577325 removed vote for option 92 in voting 12
+2025-07-26 12:32:51,648 - voting - INFO - User 5259577325 voted for option 95 in voting 12
+2025-07-26 12:32:54,966 - voting - INFO - User 5259577325 voted for option 92 in voting 12
+2025-07-26 12:32:57,587 - voting - INFO - User 5259577325 removed vote for option 95 in voting 12
+2025-07-26 12:32:58,633 - voting - INFO - User 5259577325 voted for option 90 in voting 12
+2025-07-26 12:32:59,502 - voting - INFO - User 5259577325 removed vote for option 92 in voting 12
+2025-07-26 12:33:10,453 - voting - INFO - User 5259577325 removed vote for option 90 in voting 12
+2025-07-26 12:33:55,270 - database - INFO - Database initialized successfully
+2025-07-26 12:33:55,277 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:33:55,278 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:33:55,551 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:34:02,227 - bot - INFO - Unpinned voting message 292 in chat -1002797546947
+2025-07-26 12:34:06,022 - bot - INFO - Unpinned previous voting message 292 in chat -1002797546947
+2025-07-26 12:34:06,028 - voting - INFO - Created voting 13 in chat -1002797546947
+2025-07-26 12:34:06,222 - bot - INFO - Pinned voting message 303 in chat -1002797546947
+2025-07-26 12:34:11,029 - voting - INFO - User 5259577325 voted for option 99 in voting 13
+2025-07-26 12:34:12,302 - voting - INFO - User 5259577325 voted for option 102 in voting 13
+2025-07-26 12:34:13,128 - voting - INFO - User 5259577325 removed vote for option 99 in voting 13
+2025-07-26 12:34:13,706 - voting - INFO - User 5259577325 voted for option 100 in voting 13
+2025-07-26 12:34:14,884 - voting - INFO - User 5259577325 voted for option 97 in voting 13
+2025-07-26 12:34:18,249 - voting - INFO - User 5259577325 voted for option 103 in voting 13
+2025-07-26 12:34:19,261 - voting - INFO - User 5259577325 voted for option 99 in voting 13
+2025-07-26 12:34:20,084 - voting - INFO - User 5259577325 voted for option 98 in voting 13
+2025-07-26 12:34:21,381 - voting - INFO - User 5259577325 voted for option 101 in voting 13
+2025-07-26 12:34:23,158 - voting - INFO - User 5259577325 voted for option 104 in voting 13
+2025-07-26 12:34:52,626 - voting - INFO - User 476658130 voted for option 97 in voting 13
+2025-07-26 12:34:53,665 - voting - INFO - User 476658130 removed vote for option 97 in voting 13
+2025-07-26 12:34:55,028 - voting - INFO - User 476658130 voted for option 101 in voting 13
+2025-07-26 12:34:57,657 - voting - INFO - User 476658130 voted for option 99 in voting 13
+2025-07-26 12:35:06,888 - voting - INFO - User 476658130 removed vote for option 99 in voting 13
+2025-07-26 12:35:07,955 - voting - INFO - User 476658130 voted for option 99 in voting 13
+2025-07-26 12:35:10,806 - voting - INFO - User 476658130 voted for option 103 in voting 13
+2025-07-26 12:35:12,653 - voting - INFO - User 476658130 voted for option 102 in voting 13
+2025-07-26 12:35:16,662 - voting - INFO - User 5259577325 removed vote for option 101 in voting 13
+2025-07-26 12:35:17,853 - voting - INFO - User 5259577325 voted for option 101 in voting 13
+2025-07-26 12:35:32,001 - bot - INFO - Unpinned voting message 303 in chat -1002797546947
+2025-07-26 12:36:55,129 - database - INFO - Database initialized successfully
+2025-07-26 12:36:55,137 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:36:55,137 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:36:55,425 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:37:03,105 - bot - INFO - Unpinned previous voting message 303 in chat -1002797546947
+2025-07-26 12:37:03,114 - voting - INFO - Created voting 14 in chat -1002797546947
+2025-07-26 12:37:03,534 - bot - INFO - Pinned voting message 314 in chat -1002797546947
+2025-07-26 12:37:06,478 - voting - INFO - User 5259577325 voted for option 108 in voting 14
+2025-07-26 12:37:08,114 - voting - INFO - User 5259577325 voted for option 110 in voting 14
+2025-07-26 12:42:25,953 - database - INFO - Database initialized successfully
+2025-07-26 12:42:25,961 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:42:25,961 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:42:26,235 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:42:33,210 - voting - INFO - Created voting 2 in chat -1002797546947
+2025-07-26 12:42:33,550 - bot - INFO - Pinned voting message 322 in chat -1002797546947
+2025-07-26 12:42:36,710 - bot - INFO - Unpinned voting message 322 in chat -1002797546947
+2025-07-26 12:42:45,146 - bot - INFO - Unpinned previous voting message 322 in chat -1002797546947
+2025-07-26 12:42:45,152 - voting - INFO - Created voting 3 in chat -1002797546947
+2025-07-26 12:42:45,338 - bot - INFO - Pinned voting message 328 in chat -1002797546947
+2025-07-26 12:42:48,672 - voting - INFO - User 5259577325 voted for option 22 in voting 3
+2025-07-26 12:42:49,622 - voting - INFO - User 5259577325 voted for option 27 in voting 3
+2025-07-26 12:42:51,107 - voting - INFO - User 5259577325 removed vote for option 22 in voting 3
+2025-07-26 12:42:52,098 - voting - INFO - User 5259577325 removed vote for option 27 in voting 3
+2025-07-26 12:42:52,881 - voting - INFO - User 5259577325 voted for option 27 in voting 3
+2025-07-26 12:42:56,264 - voting - INFO - User 5259577325 voted for option 21 in voting 3
+2025-07-26 12:42:57,088 - voting - INFO - User 5259577325 voted for option 19 in voting 3
+2025-07-26 12:43:06,410 - bot - INFO - Unpinned voting message 328 in chat -1002797546947
+2025-07-26 12:43:53,268 - bot - INFO - Unpinned previous voting message 328 in chat -1002797546947
+2025-07-26 12:43:53,273 - voting - INFO - Created voting 4 in chat -1002797546947
+2025-07-26 12:43:53,478 - bot - INFO - Pinned voting message 340 in chat -1002797546947
+2025-07-26 12:45:10,442 - bot - INFO - Unpinned voting message 340 in chat -1002797546947
+2025-07-26 12:45:14,028 - database - INFO - Database initialized successfully
+2025-07-26 12:45:14,036 - bot - INFO - Starting FrienGO bot...
+2025-07-26 12:45:14,036 - scheduler - INFO - Ping scheduler started
+2025-07-26 12:45:14,308 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 12:45:17,035 - bot - INFO - Unpinned previous voting message 340 in chat -1002797546947
+2025-07-26 12:45:17,040 - voting - INFO - Created voting 5 in chat -1002797546947
+2025-07-26 12:45:17,274 - bot - INFO - Pinned voting message 352 in chat -1002797546947

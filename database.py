@@ -61,7 +61,7 @@ class DatabaseManager:
                 CREATE TABLE IF NOT EXISTS vote_options (
                     option_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     voting_id INTEGER NOT NULL,
-                    date DATE NOT NULL,
+                    date DATE,
                     description TEXT NOT NULL,
                     FOREIGN KEY (voting_id) REFERENCES votings (voting_id)
                 )
@@ -194,12 +194,17 @@ class DatabaseManager:
             
             # Получить опции
             cursor.execute("SELECT * FROM vote_options WHERE voting_id = ?", (voting_id,))
-            options = [VoteOption(
-                option_id=row['option_id'],
-                voting_id=row['voting_id'],
-                date=datetime.strptime(row['date'], '%Y-%m-%d').date(),
-                description=row['description']
-            ) for row in cursor.fetchall()]
+            options = []
+            for row in cursor.fetchall():
+                date_value = None
+                if row['date']:
+                    date_value = datetime.strptime(row['date'], '%Y-%m-%d').date()
+                options.append(VoteOption(
+                    option_id=row['option_id'],
+                    voting_id=row['voting_id'],
+                    date=date_value,
+                    description=row['description']
+                ))
             
             # Получить голоса
             cursor.execute("SELECT * FROM votes WHERE voting_id = ?", (voting_id,))

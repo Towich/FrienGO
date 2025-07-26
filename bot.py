@@ -159,12 +159,14 @@ class FrienGoBot:
             "**Основные команды:**\n"
             "👤 `/join` - Присоединиться к системе для получения уведомлений\n"
             "👥 `/users` - Показать список зарегистрированных пользователей\n"
-            "🗳 `/vote` - Создать новое голосование о днях встречи\n"
+            "🗳 `/vote [заголовок]` - Создать новое голосование о днях встречи\n"
             "📢 `/ping` - Напомнить непроголосовавшим участникам\n"
             "🏁 `/close` - Завершить голосование и показать детальные результаты\n\n"
             "**Как пользоваться:**\n"
             "0️⃣ Присоединитесь командой `/join` для получения уведомлений\n"
-            "1️⃣ Создайте голосование командой `/vote`\n"
+            "1️⃣ Создайте голосование:\n"
+            "    • `/vote` - обычное голосование\n"
+            "    • `/vote Идем в аквапарк` - с заголовком\n"
             "2️⃣ Выберите подходящие дни, нажимая на кнопки\n"
             "3️⃣ Можете отменить свой голос, нажав на кнопку повторно\n"
             "4️⃣ Используйте `/ping` чтобы напомнить друзьям\n"
@@ -189,6 +191,11 @@ class FrienGoBot:
         chat_id = update.effective_chat.id
         user = update.effective_user
         
+        # Извлекаем заголовок из команды
+        title = None
+        if context.args:
+            title = " ".join(context.args)
+        
         # Сохраняем пользователя
         if user:
             db_user = User(
@@ -212,8 +219,8 @@ class FrienGoBot:
                 except Exception as e:
                     self.logger.warning(f"Failed to unpin previous message: {e}")
             
-            # Создаем голосование
-            voting = self.voting_service.create_voting(chat_id)
+            # Создаем голосование с пользовательским заголовком
+            voting = self.voting_service.create_voting(chat_id, title)
             
             # Формируем сообщение и клавиатуру
             message_text = self._format_voting_message(voting.voting_id)
@@ -322,7 +329,7 @@ class FrienGoBot:
             message += f"📅 **{option['description']}**: {option['votes_count']} голосов\n"
             if option['voters']:
                 for voter in option['voters']:
-                    message += f"   👤 {voter['display_name']} {voter['username']}\n"
+                    message += f"   👤 {voter['display_name']}\n"
             else:
                 message += f"   ❌ Никто не голосовал\n"
             message += "\n"
@@ -337,7 +344,7 @@ class FrienGoBot:
                 option_message = f"📅 **{option['description']}**: {option['votes_count']} голосов\n"
                 if option['voters']:
                     for voter in option['voters']:
-                        option_message += f"   👤 {voter['display_name']} {voter['username']}\n"
+                        option_message += f"   👤 {voter['display_name']}\n"
                 else:
                     option_message += f"   ❌ Никто не голосовал\n"
                 
@@ -395,8 +402,8 @@ class FrienGoBot:
                 if success:
                     # Обновляем сообщение
                     await self._update_voting_message(query, voting_id)
-                    # Отправляем уведомление о голосе
-                    await self._send_vote_notification(update.effective_chat.id, user, voting_id, option_id)
+                    # Отправляем уведомление только при первом голосе пользователя
+                    await self._send_first_vote_notification(update.effective_chat.id, user, voting_id)
                 else:
                     await query.answer(message, show_alert=True)
     
@@ -414,25 +421,32 @@ class FrienGoBot:
         except Exception as e:
             self.logger.error(f"Error updating voting message: {e}")
     
-    async def _send_vote_notification(self, chat_id: int, user, voting_id: int, option_id: int):
-        """Отправить уведомление о том, что пользователь проголосовал"""
+    async def _send_first_vote_notification(self, chat_id: int, user, voting_id: int):
+        """Отправить уведомление о том, что пользователь впервые проголосовал"""
+        # Получаем актуальное голосование для проверки голосов пользователя
+        voting = self.db.get_voting(voting_id)
+        if not voting:
+            return
+        
+        # Проверяем, есть ли у пользователя только один голос (текущий)
+        user_votes = voting.get_user_votes(user.id)
+        if len(user_votes) != 1:
+            # Если у пользователя больше одного голоса, значит он уже голосовал ранее
+            return
+        
+        # Получаем статистику для подсчета общего количества проголосовавших
         stats = self.voting_service.get_voting_stats(voting_id)
         if not stats:
             return
         
-        # Находим информацию о выбранной опции
-        selected_option = None
-        for option in stats['options']:
-            if option['option_id'] == option_id:
-                selected_option = option
-                break
+        # Получаем полное имя пользователя из базы данных
+        db_user = self.db.get_user(user.id)
+        if db_user:
+            user_name = db_user.display_name
+        else:
+            user_name = user.first_name or user.username or f"User_{user.id}"
         
-        if not selected_option:
-            return
-        
-        user_name = user.first_name or user.username or f"User_{user.id}"
-        
-        message = (f"✅ {user_name} проголосовал за {selected_option['description']}!\n"
+        message = (f"✅ {user_name} проголосовал!\n"
                   f"📊 Проголосовало: {stats['voted_users']}/{stats['total_users']}")
         
         try:

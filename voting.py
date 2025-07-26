@@ -65,6 +65,10 @@ class VotingService:
             option = VoteOption.create_from_date(0, 0, weekend_date)
             voting.options.append(option)
         
+        # Добавляем опцию "Не пойду:("
+        not_going_option = VoteOption.create_custom(0, 0, "Не пойду:(")
+        voting.options.append(not_going_option)
+        
         # Сохраняем в БД
         voting = self.db.create_voting(voting)
         
@@ -241,10 +245,8 @@ class VotingService:
             for user_id in option['voters']:
                 user = self.db.get_user(user_id)
                 if user:
-                    username_part = f"@{user.username}" if user.username else f"ID:{user_id}"
                     voters_info.append({
                         'display_name': user.display_name,
-                        'username': username_part,
                         'user_id': user_id
                     })
             
