@@ -143,6 +143,18 @@ class DatabaseManager:
                 last_name=row['last_name']
             ) for row in cursor.fetchall()]
     
+    def get_all_users(self) -> List[User]:
+        """Получить всех пользователей из базы данных"""
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users ORDER BY user_id")
+            return [User(
+                user_id=row['user_id'],
+                username=row['username'],
+                first_name=row['first_name'],
+                last_name=row['last_name']
+            ) for row in cursor.fetchall()]
+    
     # Voting methods
     def create_voting(self, voting: Voting) -> Voting:
         """Создать новое голосование"""

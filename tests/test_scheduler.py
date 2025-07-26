@@ -78,6 +78,26 @@ class TestPingScheduler(unittest.TestCase):
         
         self.assertIn("Не забудьте проголосовать", message)
         self.assertIn("Нажмите на кнопки", message)
+    
+    def test_get_ping_message_with_underscores_in_usernames(self):
+        """Тест экранирования подчеркиваний в username для Markdown"""
+        users = [
+            User(123, "el_bess", "El", "Bess"),
+            User(456, "dobro_official", "Dobro", "Official"),
+            User(789, "maria_dombrovskaya", "Maria", "Dombrovskaya")
+        ]
+        
+        message = self.scheduler._get_ping_message("24h", users)
+        
+        # Проверяем что подчеркивания экранированы
+        self.assertIn("@el\\_bess", message)
+        self.assertIn("@dobro\\_official", message)
+        self.assertIn("@maria\\_dombrovskaya", message)
+        
+        # Проверяем что неэкранированные варианты НЕ присутствуют
+        self.assertNotIn("@el_bess", message)
+        self.assertNotIn("@dobro_official", message)
+        self.assertNotIn("@maria_dombrovskaya", message)
 
 
 if __name__ == '__main__':

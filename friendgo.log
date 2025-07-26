@@ -117,3 +117,50 @@ RuntimeError: This Updater is not running!
 2025-07-26 11:02:04,509 - bot - INFO - Unpinned previous voting message 75 in chat -1002797546947
 2025-07-26 11:02:04,514 - voting - INFO - Created voting 5 in chat -1002797546947
 2025-07-26 11:02:04,719 - bot - INFO - Pinned voting message 83 in chat -1002797546947
+2025-07-26 11:05:09,983 - database - INFO - Database initialized successfully
+2025-07-26 11:05:09,990 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:05:09,990 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:05:10,271 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:05:36,177 - bot - INFO - Unpinned voting message 83 in chat -1002797546947
+2025-07-26 11:05:37,364 - bot - INFO - Unpinned previous voting message 83 in chat -1002797546947
+2025-07-26 11:05:37,369 - voting - INFO - Created voting 6 in chat -1002797546947
+2025-07-26 11:05:37,593 - bot - INFO - Pinned voting message 97 in chat -1002797546947
+2025-07-26 11:05:52,312 - bot - INFO - Unpinned voting message 97 in chat -1002797546947
+2025-07-26 11:05:57,183 - bot - INFO - Unpinned previous voting message 97 in chat -1002797546947
+2025-07-26 11:05:57,189 - voting - INFO - Created voting 7 in chat -1002797546947
+2025-07-26 11:05:57,417 - bot - INFO - Pinned voting message 106 in chat -1002797546947
+2025-07-26 11:06:04,391 - voting - INFO - User 5259577325 voted for option 49 in voting 7
+2025-07-26 11:08:52,797 - database - INFO - Database initialized successfully
+2025-07-26 11:08:52,805 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:08:52,805 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:08:53,080 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:10:22,707 - voting - INFO - User 476658130 voted for option 49 in voting 7
+2025-07-26 11:13:37,738 - database - INFO - Database initialized successfully
+2025-07-26 11:13:37,746 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:13:37,746 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:13:38,026 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:13:49,138 - bot - INFO - Unpinned voting message 106 in chat -1002797546947
+2025-07-26 11:13:50,771 - bot - INFO - Unpinned previous voting message 106 in chat -1002797546947
+2025-07-26 11:13:50,776 - voting - INFO - Created voting 9 in chat -1002797546947
+2025-07-26 11:13:50,961 - bot - INFO - Pinned voting message 116 in chat -1002797546947
+2025-07-26 11:13:54,836 - voting - INFO - User 5259577325 voted for option 68 in voting 9
+2025-07-26 11:17:15,019 - database - INFO - Database initialized successfully
+2025-07-26 11:17:15,027 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:17:15,028 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:17:15,299 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:20:06,597 - database - INFO - Database initialized successfully
+2025-07-26 11:20:06,605 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:20:06,605 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:20:06,875 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:20:13,618 - bot - INFO - Unpinned voting message 116 in chat -1002797546947
+2025-07-26 11:20:15,386 - bot - INFO - Unpinned previous voting message 116 in chat -1002797546947
+2025-07-26 11:20:15,392 - voting - INFO - Created voting 11 in chat -1002797546947
+2025-07-26 11:20:15,638 - bot - INFO - Pinned voting message 128 in chat -1002797546947
+2025-07-26 11:26:46,296 - database - INFO - Database initialized successfully
+2025-07-26 11:26:46,304 - bot - INFO - Starting FrienGO bot...
+2025-07-26 11:26:46,304 - scheduler - INFO - Ping scheduler started
+2025-07-26 11:26:46,567 - bot - INFO - FrienGO bot started successfully!
+2025-07-26 11:26:53,463 - bot - INFO - Unpinned voting message 128 in chat -1002797546947
+2025-07-26 11:26:54,647 - bot - INFO - Unpinned previous voting message 128 in chat -1002797546947
+2025-07-26 11:26:54,654 - voting - INFO - Created voting 12 in chat -1002797546947
+2025-07-26 11:26:54,934 - bot - INFO - Pinned voting message 136 in chat -1002797546947

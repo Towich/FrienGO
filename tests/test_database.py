@@ -272,6 +272,27 @@ class TestDatabaseManager(unittest.TestCase):
         # Тест для чата без голосований
         no_message_id = self.db.get_last_closed_voting_message_id(999)
         self.assertIsNone(no_message_id)
+    
+    def test_get_all_users(self):
+        """Тест получения всех пользователей из базы данных"""
+        # Создаем несколько пользователей
+        user1 = User(123, "user1", "User", "One")
+        user2 = User(456, "user2", "User", "Two")
+        user3 = User(789, "user3", "User", "Three")
+        
+        self.db.save_user(user1)
+        self.db.save_user(user2)
+        self.db.save_user(user3)
+        
+        # Получаем всех пользователей
+        all_users = self.db.get_all_users()
+        user_ids = {user.user_id for user in all_users}
+        
+        # Проверяем что все пользователи присутствуют
+        self.assertIn(123, user_ids)
+        self.assertIn(456, user_ids)
+        self.assertIn(789, user_ids)
+        self.assertGreaterEqual(len(all_users), 3)  # Может быть больше из-за других тестов
 
 
 if __name__ == "__main__":

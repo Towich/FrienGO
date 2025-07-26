@@ -139,17 +139,14 @@ class VotingService:
         if not voting:
             return None
         
-        total_chat_users = len(self.db.get_chat_users(voting.chat_id))
+        # Получаем всех пользователей из базы данных (включая новых друзей)
+        total_users = len(self.db.get_all_users())
         voted_users = len(voting.get_voted_users())
-        
-        # Если это первое голосование в чате, считаем всех проголосовавших
-        if total_chat_users == 0:
-            total_chat_users = voted_users
         
         stats = {
             'voting_id': voting_id,
             'title': voting.title,
-            'total_users': total_chat_users,
+            'total_users': total_users,
             'voted_users': voted_users,
             'options': []
         }

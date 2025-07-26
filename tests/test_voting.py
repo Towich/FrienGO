@@ -205,6 +205,10 @@ class TestVotingService(unittest.TestCase):
         chat_id = 123
         user_id = 456
         
+        # Добавляем пользователя в БД
+        user = User(user_id, "testuser", "Test", "User")
+        self.db.save_user(user)
+        
         voting = self.voting_service.create_voting(chat_id, "Тест")
         option_id = voting.options[0].option_id
         

@@ -192,9 +192,9 @@ class FrienGoBot:
             await update.message.reply_text("📝 В данном чате нет активного голосования.")
             return
         
-        # Получаем всех известных пользователей чата
-        chat_users = self.db.get_chat_users(chat_id)
-        non_voted_users = self.voting_service.get_non_voted_users(voting.voting_id, chat_users)
+        # Получаем всех известных пользователей (включая новых друзей)
+        all_users = self.db.get_all_users()
+        non_voted_users = self.voting_service.get_non_voted_users(voting.voting_id, all_users)
         
         result = await self.scheduler.send_manual_ping(chat_id, voting.voting_id, non_voted_users)
         await update.message.reply_text(result, parse_mode=ParseMode.MARKDOWN)

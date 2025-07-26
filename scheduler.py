@@ -76,11 +76,11 @@ class PingScheduler:
         if not self.ping_callback:
             return
         
-        # Получаем список всех известных пользователей чата
-        chat_users = self.db.get_chat_users(chat_id)
+        # Получаем список всех известных пользователей (включая новых друзей)
+        all_users = self.db.get_all_users()
         
         # Получаем список не проголосовавших пользователей
-        non_voted_users = self.voting_service.get_non_voted_users(voting_id, chat_users)
+        non_voted_users = self.voting_service.get_non_voted_users(voting_id, all_users)
         
         # Создаем сообщение с пингом
         message = self._get_ping_message(ping_type, non_voted_users)
@@ -103,8 +103,9 @@ class PingScheduler:
         mentions = []
         for user in non_voted_users:
             if user.username:
-                # Если есть username, используем @username
-                mentions.append(f"@{user.username}")
+                # Если есть username, используем @username с экранированными подчеркиваниями для Markdown
+                escaped_username = user.username.replace('_', r'\_')
+                mentions.append(f"@{escaped_username}")
             else:
                 # Если нет username, используем упоминание по ID
                 display_name = user.display_name
@@ -128,8 +129,9 @@ class PingScheduler:
         mentions = []
         for user in non_voted_users:
             if user.username:
-                # Если есть username, используем @username
-                mentions.append(f"@{user.username}")
+                # Если есть username, используем @username с экранированными подчеркиваниями для Markdown
+                escaped_username = user.username.replace('_', r'\_')
+                mentions.append(f"@{escaped_username}")
             else:
                 # Если нет username, используем упоминание по ID
                 display_name = user.display_name
