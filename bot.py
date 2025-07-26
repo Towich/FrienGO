@@ -37,6 +37,8 @@ class FrienGoBot:
         # Команды
         self.application.add_handler(CommandHandler("start", self.start_command))
         self.application.add_handler(CommandHandler("help", self.help_command))
+        self.application.add_handler(CommandHandler("join", self.join_command))
+        self.application.add_handler(CommandHandler("users", self.users_command))
         self.application.add_handler(CommandHandler("vote", self.create_voting_command))
         self.application.add_handler(CommandHandler("ping", self.ping_command))
         self.application.add_handler(CommandHandler("status", self.status_command))
@@ -64,6 +66,7 @@ class FrienGoBot:
         
         welcome_text = (
             "👋 Привет! Я бот FrienGO для организации встреч с друзьями!\n\n"
+            "👤 Используй /join чтобы присоединиться для получения уведомлений\n"
             "🗳 Используй /vote чтобы создать голосование о днях встречи\n"
             "📊 Используй /status чтобы посмотреть текущее голосование\n"
             "📢 Используй /ping чтобы напомнить друзьям проголосовать\n"
@@ -73,17 +76,99 @@ class FrienGoBot:
         
         await update.message.reply_text(welcome_text)
     
+    async def join_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обработчик команды /join - регистрация пользователя в системе"""
+        user = update.effective_user
+        if not user:
+            await update.message.reply_text("❌ Не удалось получить информацию о пользователе")
+            return
+        
+        # Сохраняем пользователя в БД
+        db_user = User(
+            user_id=user.id,
+            username=user.username,
+            first_name=user.first_name,
+            last_name=user.last_name
+        )
+        self.db.save_user(db_user)
+        
+        # Проверяем, был ли пользователь уже зарегистрирован
+        existing_user = self.db.get_user(user.id)
+        if existing_user:
+            user_display = existing_user.display_name
+            username_part = f" (@{existing_user.username})" if existing_user.username else ""
+            
+            register_text = (
+                f"✅ **Регистрация завершена!**\n\n"
+                f"👤 **Имя:** {user_display}{username_part}\n"
+                f"🆔 **ID:** {user.id}\n\n"
+                f"Теперь вы находитесь в таблице известных пользователей!\n"
+                f"📢 Вы будете получать уведомления о новых голосованиях и напоминания о необходимости проголосовать.\n\n"
+                f"💡 Используйте /vote для создания голосования или /help для просмотра всех команд."
+            )
+        else:
+            register_text = "❌ Произошла ошибка при регистрации. Попробуйте еще раз."
+        
+        await update.message.reply_text(register_text, parse_mode=ParseMode.MARKDOWN)
+    
+    async def users_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Обработчик команды /users - показать список зарегистрированных пользователей"""
+        all_users = self.db.get_all_users()
+        
+        if not all_users:
+            await update.message.reply_text(
+                "📭 В системе пока нет зарегистрированных пользователей.\n"
+                "Используйте /join для присоединения!"
+            )
+            return
+        
+        users_text = f"👥 **Зарегистрированные пользователи ({len(all_users)}):**\n\n"
+        
+        for i, user in enumerate(all_users, 1):
+            user_display = user.display_name
+            username_part = f" (@{user.username})" if user.username else ""
+            users_text += f"{i}. {user_display}{username_part} (ID: {user.user_id})\n"
+        
+        users_text += f"\n💡 Все эти пользователи будут получать уведомления о голосованиях."
+        
+        # Разбиваем сообщение на части, если оно слишком длинное
+        if len(users_text) > 4000:
+            # Отправляем заголовок отдельно
+            header = f"👥 **Зарегистрированные пользователи ({len(all_users)}):**\n\n"
+            await update.message.reply_text(header, parse_mode=ParseMode.MARKDOWN)
+            
+            # Отправляем пользователей группами по 20
+            chunk_size = 20
+            for i in range(0, len(all_users), chunk_size):
+                chunk_users = all_users[i:i + chunk_size]
+                chunk_text = ""
+                for j, user in enumerate(chunk_users, i + 1):
+                    user_display = user.display_name
+                    username_part = f" (@{user.username})" if user.username else ""
+                    chunk_text += f"{j}. {user_display}{username_part} (ID: {user.user_id})\n"
+                
+                await update.message.reply_text(chunk_text, parse_mode=ParseMode.MARKDOWN)
+            
+            # Отправляем заключение
+            footer = f"\n💡 Все эти пользователи будут получать уведомления о голосованиях."
+            await update.message.reply_text(footer, parse_mode=ParseMode.MARKDOWN)
+        else:
+            await update.message.reply_text(users_text, parse_mode=ParseMode.MARKDOWN)
+    
     async def help_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /help"""
         help_text = (
             "📖 **Справка по командам FrienGO бота**\n\n"
             "**Основные команды:**\n"
+            "👤 `/join` - Присоединиться к системе для получения уведомлений\n"
+            "👥 `/users` - Показать список зарегистрированных пользователей\n"
             "🗳 `/vote` - Создать новое голосование о днях встречи\n"
             "📊 `/status` - Показать текущее активное голосование\n"
             "📢 `/ping` - Напомнить непроголосовавшим участникам\n"
             "🔍 `/results` - Подробные результаты с именами голосующих\n"
             "🏁 `/close` - Завершить голосование и показать топ-3\n\n"
             "**Как пользоваться:**\n"
+            "0️⃣ Присоединитесь командой `/join` для получения уведомлений\n"
             "1️⃣ Создайте голосование командой `/vote`\n"
             "2️⃣ Выберите подходящие дни, нажимая на кнопки\n"
             "3️⃣ Можете отменить свой голос, нажав на кнопку повторно\n"
@@ -96,7 +181,8 @@ class FrienGoBot:
             "🔄 Возможность отмены голоса\n"
             "📊 Автоматический подсчет голосов\n"
             "👥 Отслеживание количества проголосовавших\n"
-            "📌 Автоматическое закрепление сообщений с голосованием\n\n"
+            "📌 Автоматическое закрепление сообщений с голосованием\n"
+            "📢 Уведомления для зарегистрированных пользователей\n\n"
             "Приятного использования! 🎉"
         )
         
