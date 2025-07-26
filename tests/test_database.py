@@ -72,6 +72,7 @@ class TestDatabaseManager(unittest.TestCase):
             voting_id=0,
             chat_id=123,
             message_id=456,
+            message_thread_id=None,
             title="Тестовое голосование",
             created_at=now,
             status=VoteStatus.ACTIVE
@@ -104,7 +105,7 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.save_user(user)
         
         # Создаем голосование
-        voting = Voting(0, 456, None, "Test", datetime.now())
+        voting = Voting(0, 456, None, None, "Test", datetime.now())
         option = VoteOption(0, 0, date(2024, 1, 6), "Test option")
         voting.options = [option]
         created_voting = self.db.create_voting(voting)
@@ -133,7 +134,7 @@ class TestDatabaseManager(unittest.TestCase):
     def test_get_active_voting_by_chat(self):
         """Тест получения активного голосования в чате"""
         # Создаем голосование
-        voting = Voting(0, 123, None, "Active voting", datetime.now())
+        voting = Voting(0, 123, None, None, "Active voting", datetime.now())
         voting.options = [VoteOption(0, 0, date(2024, 1, 6), "Test option")]
         created_voting = self.db.create_voting(voting)
         
@@ -149,7 +150,7 @@ class TestDatabaseManager(unittest.TestCase):
     
     def test_update_voting_message_id(self):
         """Тест обновления ID сообщения голосования"""
-        voting = Voting(0, 123, None, "Test", datetime.now())
+        voting = Voting(0, 123, None, None, "Test", datetime.now())
         voting.options = [VoteOption(0, 0, date(2024, 1, 6), "Test option")]
         created_voting = self.db.create_voting(voting)
         
@@ -163,7 +164,7 @@ class TestDatabaseManager(unittest.TestCase):
     def test_ping_schedule_operations(self):
         """Тест операций с расписанием пингов"""
         # Создаем голосование
-        voting = Voting(0, 123, None, "Test", datetime.now())
+        voting = Voting(0, 123, None, None, "Test", datetime.now())
         voting.options = [VoteOption(0, 0, date(2024, 1, 6), "Test option")]
         created_voting = self.db.create_voting(voting)
         
@@ -210,11 +211,11 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.save_user(user3)
         
         # Создаем голосования в разных чатах
-        voting1 = Voting(0, 111, None, "Chat 1", datetime.now())
+        voting1 = Voting(0, 111, None, None, "Chat 1", datetime.now())
         voting1.options = [VoteOption(0, 0, date(2024, 1, 6), "Test")]
         created_voting1 = self.db.create_voting(voting1)
         
-        voting2 = Voting(0, 222, None, "Chat 2", datetime.now())
+        voting2 = Voting(0, 222, None, None, "Chat 2", datetime.now())
         voting2.options = [VoteOption(0, 0, date(2024, 1, 6), "Test")]
         created_voting2 = self.db.create_voting(voting2)
         
@@ -244,11 +245,11 @@ class TestDatabaseManager(unittest.TestCase):
         chat_id = 123
         
         # Создаем два голосования
-        voting1 = Voting(0, chat_id, None, "Test 1", datetime.now())
+        voting1 = Voting(0, chat_id, None, None, "Test 1", datetime.now())
         voting1.options = [VoteOption(0, 0, date(2024, 1, 6), "Test")]
         created_voting1 = self.db.create_voting(voting1)
         
-        voting2 = Voting(0, chat_id, None, "Test 2", datetime.now())
+        voting2 = Voting(0, chat_id, None, None, "Test 2", datetime.now())
         voting2.options = [VoteOption(0, 0, date(2024, 1, 7), "Test")]
         created_voting2 = self.db.create_voting(voting2)
         

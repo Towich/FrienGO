@@ -207,6 +207,9 @@ class FrienGoBot:
             self.db.save_user(db_user)
         
         try:
+            # Получаем message_thread_id если сообщение в топике
+            message_thread_id = getattr(update.message, 'message_thread_id', None)
+            
             # Раскрепляем предыдущие сообщения голосований (если есть)
             last_message_id = self.db.get_last_closed_voting_message_id(chat_id)
             if last_message_id:
@@ -219,8 +222,8 @@ class FrienGoBot:
                 except Exception as e:
                     self.logger.warning(f"Failed to unpin previous message: {e}")
             
-            # Создаем голосование с пользовательским заголовком
-            voting = self.voting_service.create_voting(chat_id, title)
+            # Создаем голосование с пользовательским заголовком и message_thread_id
+            voting = self.voting_service.create_voting(chat_id, title, message_thread_id)
             
             # Формируем сообщение и клавиатуру
             message_text = self._format_voting_message(voting.voting_id)
@@ -249,10 +252,20 @@ class FrienGoBot:
                 # Не блокируем создание голосования если не удалось закрепить
             
         except ValueError as e:
-            await update.message.reply_text(f"❌ {str(e)}")
+            # Отправляем ошибку в том же топике
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text=f"❌ {str(e)}",
+                message_thread_id=message_thread_id
+            )
         except Exception as e:
             self.logger.error(f"Error creating voting: {e}")
-            await update.message.reply_text("❌ Произошла ошибка при создании голосования")
+            # Отправляем ошибку в том же топике
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text="❌ Произошла ошибка при создании голосования",
+                message_thread_id=message_thread_id
+            )
     
     async def ping_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик команды /ping - напомнить непроголосовавшим"""
@@ -260,7 +273,13 @@ class FrienGoBot:
         
         voting = self.voting_service.get_active_voting(chat_id)
         if not voting:
-            await update.message.reply_text("📝 В данном чате нет активного голосования.")
+            # Отправляем ответ в том же топике, где была команда
+            message_thread_id = getattr(update.message, 'message_thread_id', None)
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text="📝 В данном чате нет активного голосования.",
+                message_thread_id=message_thread_id
+            )
             return
         
         # Получаем всех известных пользователей (включая новых друзей)
@@ -276,7 +295,13 @@ class FrienGoBot:
         
         voting = self.voting_service.get_active_voting(chat_id)
         if not voting:
-            await update.message.reply_text("📝 В данном чате нет активного голосования.")
+            # Отправляем ответ в том же топике, где была команда
+            message_thread_id = getattr(update.message, 'message_thread_id', None)
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text="📝 В данном чате нет активного голосования.",
+                message_thread_id=message_thread_id
+            )
             return
         
         # Раскрепляем сообщение с голосованием перед закрытием
@@ -293,7 +318,11 @@ class FrienGoBot:
         # Завершаем голосование
         results = self.voting_service.close_voting(voting.voting_id)
         if not results:
-            await update.message.reply_text("❌ Ошибка при завершении голосования.")
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text="❌ Ошибка при завершении голосования.",
+                message_thread_id=voting.message_thread_id
+            )
             return
         
         # Формируем сообщение с топ-3 результатами
@@ -309,7 +338,13 @@ class FrienGoBot:
         if len(results['top_3']) == 0:
             message += "❌ Никто не проголосовал\n"
         
-        await update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+        # Отправляем сообщение с учетом топика
+        await self.application.bot.send_message(
+            chat_id=chat_id,
+            text=message,
+            parse_mode=ParseMode.MARKDOWN,
+            message_thread_id=voting.message_thread_id
+        )
         
         # Показываем детальные результаты
         await self._send_detailed_results(update, voting.voting_id)
@@ -318,9 +353,21 @@ class FrienGoBot:
         """Отправить детальные результаты голосования"""
         # Получаем детальные результаты
         results = self.voting_service.get_detailed_results(voting_id)
+        chat_id = update.effective_chat.id
+        
         if not results:
-            await update.message.reply_text("❌ Ошибка при получении детальных результатов.")
+            # Получаем message_thread_id из команды для отправки ошибки в правильном топике
+            message_thread_id = getattr(update.message, 'message_thread_id', None)
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text="❌ Ошибка при получении детальных результатов.",
+                message_thread_id=message_thread_id
+            )
             return
+        
+        # Получаем голосование для извлечения message_thread_id
+        voting = self.db.get_voting(voting_id)
+        message_thread_id = voting.message_thread_id if voting else None
         
         # Формируем подробное сообщение
         message = f"📋 **Детальные результаты:**\n\n"
@@ -338,7 +385,12 @@ class FrienGoBot:
         if len(message) > 4000:
             # Разбиваем на части по опциям
             base_message = f"📋 **Детальные результаты:**\n\n"
-            await update.message.reply_text(base_message, parse_mode=ParseMode.MARKDOWN)
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text=base_message,
+                parse_mode=ParseMode.MARKDOWN,
+                message_thread_id=message_thread_id
+            )
             
             for option in results['options']:
                 option_message = f"📅 **{option['description']}**: {option['votes_count']} голосов\n"
@@ -348,9 +400,19 @@ class FrienGoBot:
                 else:
                     option_message += f"   ❌ Никто не голосовал\n"
                 
-                await update.message.reply_text(option_message, parse_mode=ParseMode.MARKDOWN)
+                await self.application.bot.send_message(
+                    chat_id=chat_id,
+                    text=option_message,
+                    parse_mode=ParseMode.MARKDOWN,
+                    message_thread_id=message_thread_id
+                )
         else:
-            await update.message.reply_text(message, parse_mode=ParseMode.MARKDOWN)
+            await self.application.bot.send_message(
+                chat_id=chat_id,
+                text=message,
+                parse_mode=ParseMode.MARKDOWN,
+                message_thread_id=message_thread_id
+            )
     
     async def handle_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         """Обработчик нажатий на inline кнопки"""
@@ -450,7 +512,11 @@ class FrienGoBot:
                   f"📊 Проголосовало: {stats['voted_users']}/{stats['total_users']}")
         
         try:
-            await self.application.bot.send_message(chat_id, message)
+            await self.application.bot.send_message(
+                chat_id=chat_id, 
+                text=message,
+                message_thread_id=voting.message_thread_id
+            )
         except Exception as e:
             self.logger.error(f"Error sending vote notification: {e}")
     
@@ -522,10 +588,15 @@ class FrienGoBot:
     async def _send_ping_message(self, chat_id: int, voting_id: int, message: str):
         """Callback функция для отправки ping сообщений"""
         try:
+            # Получаем голосование для извлечения message_thread_id
+            voting = self.db.get_voting(voting_id)
+            message_thread_id = voting.message_thread_id if voting else None
+            
             await self.application.bot.send_message(
-                chat_id, 
-                message, 
-                parse_mode=ParseMode.MARKDOWN
+                chat_id=chat_id, 
+                text=message, 
+                parse_mode=ParseMode.MARKDOWN,
+                message_thread_id=message_thread_id
             )
         except Exception as e:
             self.logger.error(f"Error sending ping message: {e}")

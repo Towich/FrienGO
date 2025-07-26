@@ -63,7 +63,7 @@ class TestVotingService(unittest.TestCase):
         self.assertEqual(voting.chat_id, chat_id)
         self.assertEqual(voting.title, "Тестовое голосование")
         self.assertEqual(voting.status, VoteStatus.ACTIVE)
-        self.assertEqual(len(voting.options), 8)  # 4 недели * 2 дня
+        self.assertEqual(len(voting.options), 9)  # 4 недели * 2 дня + опция "Не пойду:("
     
     def test_create_voting_with_existing_active(self):
         """Тест создания голосования при наличии активного"""
@@ -172,7 +172,7 @@ class TestVotingService(unittest.TestCase):
         self.assertIsNotNone(stats)
         self.assertEqual(stats['voting_id'], voting.voting_id)
         self.assertEqual(stats['voted_users'], 1)
-        self.assertEqual(len(stats['options']), 8)
+        self.assertEqual(len(stats['options']), 9)
         
         # Проверяем статистику первой опции
         first_option_stats = stats['options'][0]

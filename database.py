@@ -50,6 +50,7 @@ class DatabaseManager:
                     voting_id INTEGER PRIMARY KEY AUTOINCREMENT,
                     chat_id INTEGER NOT NULL,
                     message_id INTEGER,
+                    message_thread_id INTEGER,
                     title TEXT NOT NULL,
                     created_at TIMESTAMP NOT NULL,
                     status TEXT NOT NULL DEFAULT 'active'
@@ -95,6 +96,14 @@ class DatabaseManager:
                     FOREIGN KEY (voting_id) REFERENCES votings (voting_id)
                 )
             """)
+            
+            # Миграция: добавляем message_thread_id если его нет
+            try:
+                cursor.execute("SELECT message_thread_id FROM votings LIMIT 1")
+            except sqlite3.OperationalError:
+                # Столбец не существует, добавляем его
+                cursor.execute("ALTER TABLE votings ADD COLUMN message_thread_id INTEGER")
+                self.logger.info("Added message_thread_id column to votings table")
             
             conn.commit()
             self.logger.info("Database initialized successfully")
@@ -161,9 +170,9 @@ class DatabaseManager:
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                INSERT INTO votings (chat_id, message_id, title, created_at, status)
-                VALUES (?, ?, ?, ?, ?)
-            """, (voting.chat_id, voting.message_id, voting.title, 
+                INSERT INTO votings (chat_id, message_id, message_thread_id, title, created_at, status)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (voting.chat_id, voting.message_id, voting.message_thread_id, voting.title, 
                   voting.created_at, voting.status.value))
             
             voting_id = cursor.lastrowid
@@ -220,6 +229,7 @@ class DatabaseManager:
                 voting_id=voting_row['voting_id'],
                 chat_id=voting_row['chat_id'],
                 message_id=voting_row['message_id'],
+                message_thread_id=voting_row['message_thread_id'],
                 title=voting_row['title'],
                 created_at=datetime.fromisoformat(voting_row['created_at']),
                 status=VoteStatus(voting_row['status']),

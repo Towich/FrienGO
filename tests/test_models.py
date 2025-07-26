@@ -114,6 +114,7 @@ class TestVoting(unittest.TestCase):
             voting_id=1,
             chat_id=123,
             message_id=456,
+            message_thread_id=None,
             title="Тестовое голосование",
             created_at=datetime.now(),
             status=VoteStatus.ACTIVE

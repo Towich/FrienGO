@@ -37,7 +37,7 @@ class VotingService:
         
         return weekends
     
-    def create_voting(self, chat_id: int, title: str = None) -> Voting:
+    def create_voting(self, chat_id: int, title: str = None, message_thread_id: int = None) -> Voting:
         """Создать новое голосование"""
         # Проверить, есть ли активное голосование в чате
         active_voting = self.db.get_active_voting_by_chat(chat_id)
@@ -55,6 +55,7 @@ class VotingService:
             voting_id=0,  # Будет установлен в БД
             chat_id=chat_id,
             message_id=None,
+            message_thread_id=message_thread_id,
             title=title,
             created_at=datetime.now(),
             status=VoteStatus.ACTIVE

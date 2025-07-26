@@ -66,6 +66,7 @@ class Voting:
     voting_id: int
     chat_id: int
     message_id: Optional[int]
+    message_thread_id: Optional[int]  # ID топика в Telegram (для групп с топиками)
     title: str
     created_at: datetime
     status: VoteStatus = VoteStatus.ACTIVE
